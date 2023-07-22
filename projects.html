@@ -3,6 +3,7 @@
 <!-- To Use Bootstrap -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <html>
     <head>
@@ -10,30 +11,17 @@
         <style>
             body {
                 font-family: Arial, sans-serif;
+                text-align: center;
                 background-color: #1a1a1a;
                 color: #e6e6e6;
-                margin: 0;
-                padding: 0;
+                padding: 20px;
             }
             .container {
-                max-width: 600px;
                 margin: 100px auto;
                 padding: 20px;
                 background-color: #333;
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                 border-radius: 5px;
-            }
-            h1 {
-                text-align: center;
-                margin-bottom: 30px;
-                color: #fff;
-            }
-            p {
-                line-height: 1.6;
-                margin-bottom: 20px;
-            }
-            a {
-                color: #007bff;
             }
         </style>
     </head>
@@ -53,6 +41,92 @@
     <body>
         <div class="container">
             <h1>Welcome to Jason Willis' Project Page</h1>
-            <p>This is where I will display the projects I've worked on. This page is in progress and the first project is not complete
-    </body>
+            <p>This is where I will display the projects I've worked on. This page is in progress and the first project is not complete</p>
+            <h1>Hangman Game</h1>
+
+            <div class="hangman-image">
+                <img src="hangman_images/base.png" alt="Hangman Image">
+            </div>
+        
+            <div class="word-container">
+                <p id="word-to-guess"></p>
+            </div>
+        
+            <div class="guess-container">
+                <label for="guess">Enter your guess:</label>
+                <input type="text" id="guess" required>
+                <button id="guess-button">Guess</button>
+                <button id="start-button">Start</button>
+                <button id="reset-button">Reset</button>
+            </div>
+
+            <script>
+                $(document).ready(function() {
+                    // Hangman image
+                    const hangmanImages = [
+                        'head', 'body', 'left_arm', 'right_arm', 'left_leg', 'right_leg'
+                    ];
+    
+                    let word = '';
+                    let guessedWord = '';
+                    let maxAttempts = 6;
+                    let attempts = 0;
+    
+                    function resetGame() {
+                        word = '';
+                        guessedWord = '';
+                        attempts = 0;
+                        $(".hangman-image img").attr("src", "hangman_images/base.png");
+                        $("#word-to-guess").text("");
+                        $("#guess").val("");
+                    }
+    
+                    function updateWordDisplay() {
+                        let displayWord = "";
+                        for (let i = 0; i < word.length; i++) {
+                            if (guessedWord[i] !== undefined) {
+                                displayWord += guessedWord[i] + " ";
+                            } else {
+                                displayWord += "_ ";
+                            }
+                        }
+                        $("#word-to-guess").text(displayWord.trim());
+                    }
+    
+                    function checkGuess(guess) {
+                        let correctGuess = false;
+                        for (let i = 0; i < word.length; i++) {
+                            if (word[i].toUpperCase() === guess.toUpperCase()) {
+                                guessedWord = guessedWord.slice(0, i) + guess.toUpperCase() + guessedWord.slice(i + 1);
+                                correctGuess = true;
+                            }
+                        }
+                        if (!correctGuess) {
+                            attempts++;
+                            $(".hangman-image img").attr("src", "hangman_images/" + hangmanImages[attempts - 1] + ".png");
+                        }
+                        updateWordDisplay();
+                    }
+    
+                    $("#guess-button").on("click", function() {
+                        const guess = $("#guess").val();
+                        if (guess.length === 1 && /^[A-Za-z]$/.test(guess)) {
+                            checkGuess(guess);
+                            $("#guess").val("");
+                        }
+                    });
+    
+                    $("#start-button").on("click", function() {
+                        word = $("#word").val().trim();
+                        guessedWord = "_".repeat(word.length);
+                        updateWordDisplay();
+                        resetGame();
+                    });
+    
+                    $("#reset-button").on("click", function() {
+                        resetGame();
+                    });
+                });
+            </script>
+        </body>
     </html>
