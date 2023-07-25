@@ -51,8 +51,7 @@
         <div class="container">
             <h1>Projects</h1>
             <p>This is where I will display the projects I've worked on. This page is in progress and the first project is not complete</p>
-            <h1>Hangman Game</h1>
-            <h2>(in progress, currently does not work)</h2>
+            <h1>Hangman<div style='font-size:small'>(in progress)</div></h1>
             <div class='row'>
                 <div class='col centered'>
                     <div id='hint'>The best subject in school</div>
@@ -61,8 +60,8 @@
                         _ _ _ _ _ _ _ _ <br> _ _ _ _ _ _ _ 
                     </div>
                 </div>
-                <div class='col'>
-                    <img src="hangman_images/hangman_0.jpg" alt='hangman_0'>
+                <div class='col' id='current_hangman_image'>
+                    <img src="hangman_images/hangman_0.jpg" alt='hangman_0' style='padding:10px'>
                 </div>
             </div>
             <div class='row'>
@@ -104,14 +103,6 @@
                 </div>
             </div>
             <script>
-                function replaceAt(string, index, replacement) {
-                    if (index < 0 || index >= string.length) {
-                        // Invalid index, return the original string unchanged
-                        return string;
-                    }
-                    return string.slice(0, index) + replacement + string.slice(index + 1);
-                }
-                
                 // Add click event listeners to each letter button
                 var letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
                 letters.forEach(function (letter) {
@@ -120,40 +111,82 @@
                     });
                 });
 
+                // don't allow numbers or special character in custom word input
+                const inputElement = document.getElementById('custom_word');
+                inputElement.addEventListener('input', function (event) {
+                    const inputValue = event.target.value;
+                    const regex = /^[a-zA-Z\s]+$/; // Allows alphabetic characters (uppercase and lowercase) and spaces
+                    if (!regex.test(inputValue)) {
+                        // If the input contains numbers or special characters, prevent the input from being entered
+                        event.target.value = inputValue.replace(/[^a-zA-Z\s]/g, '');
+                    }
+                });
+
+                // replaces a character at an index (used for underscores to letters)
+                function replaceAt(string, index, replacement) {
+                    if (index < 0 || index >= string.length) {
+                        // Invalid index, return the original string unchanged
+                        return string;
+                    }
+                    return string.slice(0, index) + replacement + string.slice(index + 1);
+                }
+
+                // function for when any of the keyboard buttons are clicked to see if any of the underscores need to be replaced with a letter
                 function handleButtonClick(letter) {
+                    // get the currently displayed hangman word and remove spaces and line breaks
                     var hiddenWordWithUnderscoresAndSpacesRemoved = document.getElementById("hidden_word_with_underscores").innerHTML.trim();
                     hiddenWordWithUnderscoresAndSpacesRemoved = hiddenWordWithUnderscoresAndSpacesRemoved.replace(/ /g, "");
                     hiddenWordWithUnderscoresAndSpacesRemoved = hiddenWordWithUnderscoresAndSpacesRemoved.replace(/<br\s*\/?>/gi, ' ');
-
+                    // get the full hidden word
                     var hiddenWord = document.getElementById("hidden_word").innerHTML;
-
+                    // get the indexes of each location the letter is supposed to be
                     var indexes = [];
                     for (var i = 0; i < hiddenWord.length; i++) {
-                    if (hiddenWord[i] === letter) {
-                        indexes.push(i);
+                        if (hiddenWord[i] === letter) {
+                            indexes.push(i);
+                        }
                     }
-                    }
-
+                    // at each index replace the underscore with the letter
                     indexes.forEach(function (index) {
                     hiddenWordWithUnderscoresAndSpacesRemoved = replaceAt(hiddenWordWithUnderscoresAndSpacesRemoved, index, letter);
                     });
-
+                    // add a space between each character and turn the newly created triple space into a new line
                     hiddenWordWithUnderscoresAndSpacesRemoved = hiddenWordWithUnderscoresAndSpacesRemoved.split('').join(' ');
                     hiddenWordWithUnderscoresAndSpacesRemoved = hiddenWordWithUnderscoresAndSpacesRemoved.replace('   ', "<br>");
-
+                    //replace the underscored viewed with the new underscore version after clicking the button
                     document.getElementById("hidden_word_with_underscores").innerHTML = hiddenWordWithUnderscoresAndSpacesRemoved;
-
+                    // disable the button so it isn't able to be clicked again
                     document.getElementById(letter).disabled = true;
                 }
+
+                // when the start button is clicked
                 document.getElementById("start").addEventListener("click", function() {
                     var customHint = document.getElementById("custom_hint").value;
+                    var customWord = document.getElementById("custom_word").value;
+                    var underscoreWord = customWord.replace(/[^ ]/g, '_');
+                    underscoreWord = underscoreWord.split('').join(' ');
+                    underscoreWord = underscoreWord.replace('   ', "<br>");
                     document.getElementById("hint").innerHTML = customHint;
                     document.getElementById("custom_hint").value = "";
+                    document.getElementById("custom_word").value = "";
+                    document.getElementById("hidden_word").innerHTML = customWord;
+                    document.getElementById("hidden_word_with_underscores").innerHTML = underscoreWord;
+                    letters.forEach(function (letter) {
+                        document.getElementById(letter).disabled = false;
+                    });
                 });
+
+                // when the reset button is clicked
                 document.getElementById("reset").addEventListener("click", function() {
                     var customHint = "The best subject in school";
                     document.getElementById("hint").innerHTML = customHint;
                     document.getElementById("custom_hint").value = "";
+                    document.getElementById("custom_word").value = "";
+                    document.getElementById("hidden_word_with_underscores").innerHTML = "_ _ _ _ _ _ _ _ <br> _ _ _ _ _ _ _";
+                    document.getElementById("hidden_word").innerHTML = "computer science";
+                    letters.forEach(function (letter) {
+                        document.getElementById(letter).disabled = false;
+                    });
                 });
             </script>
         </div>
