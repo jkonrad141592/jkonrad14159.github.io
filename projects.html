@@ -22,6 +22,13 @@
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                 border-radius: 5px;
             }
+            .centered{
+                margin: auto;
+            }
+            .modified_br{
+                width:100%;
+                padding:5px;
+            }
         </style>
     </head>
     <nav class="navbar navbar-expand navbar-light bg-light">
@@ -43,90 +50,50 @@
             <p>This is where I will display the projects I've worked on. This page is in progress and the first project is not complete</p>
             <h1>Hangman Game</h1>
             <h2>(in progress, currently does not work)</h2>
-
-            <div class="hangman-image">
-                <img src="hangman_images/base.png" alt="Hangman Image">
+            <div class='row'>
+                <div class='col centered'>
+                    <div id='hint'>The best subject in school</div>
+                    <div id='hidden_word'>
+                        _ _ _ _ _ _ _ _ <br> _ _ _ _ _ _ _ 
+                    </div>
+                </div>
+                <div class='col'>
+                    <img src="hangman_images/hangman_0.jpg" alt='hangman_0'>
+                </div>
             </div>
-        
-            <div class="word-container">
-                <p id="word-to-guess"></p>
+            <div class='row'>
+                <div class='col-7'>
+                    <button type="button" class="btn btn-primary" id='q'>q</button>
+                    <button type="button" class="btn btn-primary" id='q'>w</button>
+                    <button type="button" class="btn btn-primary" id='q'>e</button>
+                    <button type="button" class="btn btn-primary" id='q'>r</button>
+                    <button type="button" class="btn btn-primary" id='q'>t</button>
+                    <button type="button" class="btn btn-primary" id='q'>y</button>
+                    <button type="button" class="btn btn-primary" id='q'>u</button>
+                    <button type="button" class="btn btn-primary" id='q'>i</button>
+                    <button type="button" class="btn btn-primary" id='q'>o</button>
+                    <button type="button" class="btn btn-primary" id='q'>p</button>
+                    <div class='modified_br'></div>
+                    <button type="button" class="btn btn-primary" id='q'>a</button>
+                    <button type="button" class="btn btn-primary" id='q'>s</button>
+                    <button type="button" class="btn btn-primary" id='q'>d</button>
+                    <button type="button" class="btn btn-primary" id='q'>f</button>
+                    <button type="button" class="btn btn-primary" id='q'>g</button>
+                    <button type="button" class="btn btn-primary" id='q'>h</button>
+                    <button type="button" class="btn btn-primary" id='q'>j</button>
+                    <button type="button" class="btn btn-primary" id='q'>k</button>
+                    <button type="button" class="btn btn-primary" id='q'>l</button>
+                    <div class='modified_br'></div>
+                    <button type="button" class="btn btn-primary" id='q'>z</button>
+                    <button type="button" class="btn btn-primary" id='q'>x</button>
+                    <button type="button" class="btn btn-primary" id='q'>c</button>
+                    <button type="button" class="btn btn-primary" id='q'>v</button>
+                    <button type="button" class="btn btn-primary" id='q'>b</button>
+                    <button type="button" class="btn btn-primary" id='q'>n</button>
+                    <button type="button" class="btn btn-primary" id='q'>m</button>
+                </div>
             </div>
-        
-            <div class="guess-container">
-                <label for="guess">Enter your guess:</label>
-                <input type="text" id="guess" required>
-                <button id="guess-button">Guess</button>
-                <button id="start-button">Start</button>
-                <button id="reset-button">Reset</button>
-            </div>
-
             <script>
-                $(document).ready(function() {
-                    // Hangman image
-                    const hangmanImages = [
-                        'head', 'body', 'left_arm', 'right_arm', 'left_leg', 'right_leg'
-                    ];
-    
-                    let word = '';
-                    let guessedWord = '';
-                    let maxAttempts = 6;
-                    let attempts = 0;
-    
-                    function resetGame() {
-                        word = '';
-                        guessedWord = '';
-                        attempts = 0;
-                        $(".hangman-image img").attr("src", "hangman_images/base.png");
-                        $("#word-to-guess").text("");
-                        $("#guess").val("");
-                    }
-    
-                    function updateWordDisplay() {
-                        let displayWord = "";
-                        for (let i = 0; i < word.length; i++) {
-                            if (guessedWord[i] !== undefined) {
-                                displayWord += guessedWord[i] + " ";
-                            } else {
-                                displayWord += "_ ";
-                            }
-                        }
-                        $("#word-to-guess").text(displayWord.trim());
-                    }
-    
-                    function checkGuess(guess) {
-                        let correctGuess = false;
-                        for (let i = 0; i < word.length; i++) {
-                            if (word[i].toUpperCase() === guess.toUpperCase()) {
-                                guessedWord = guessedWord.slice(0, i) + guess.toUpperCase() + guessedWord.slice(i + 1);
-                                correctGuess = true;
-                            }
-                        }
-                        if (!correctGuess) {
-                            attempts++;
-                            $(".hangman-image img").attr("src", "hangman_images/" + hangmanImages[attempts - 1] + ".png");
-                        }
-                        updateWordDisplay();
-                    }
-    
-                    $("#guess-button").on("click", function() {
-                        const guess = $("#guess").val();
-                        if (guess.length === 1 && /^[A-Za-z]$/.test(guess)) {
-                            checkGuess(guess);
-                            $("#guess").val("");
-                        }
-                    });
-    
-                    $("#start-button").on("click", function() {
-                        word = $("#word").val().trim();
-                        guessedWord = "_".repeat(word.length);
-                        updateWordDisplay();
-                        resetGame();
-                    });
-    
-                    $("#reset-button").on("click", function() {
-                        resetGame();
-                    });
-                });
             </script>
         </div>
     </body>
