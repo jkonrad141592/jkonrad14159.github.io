@@ -29,6 +29,9 @@
                 width:100%;
                 padding:5px;
             }
+            .full_width{
+                width:100%;
+            }
         </style>
     </head>
     <nav class="navbar navbar-expand navbar-light bg-light">
@@ -53,7 +56,8 @@
             <div class='row'>
                 <div class='col centered'>
                     <div id='hint'>The best subject in school</div>
-                    <div id='hidden_word'>
+                    <div id='hidden_word' style='display:none;'>computer science</div> 
+                    <div id='hidden_word_with_underscores'>
                         _ _ _ _ _ _ _ _ <br> _ _ _ _ _ _ _ 
                     </div>
                 </div>
@@ -64,36 +68,93 @@
             <div class='row'>
                 <div class='col-7'>
                     <button type="button" class="btn btn-primary" id='q'>q</button>
-                    <button type="button" class="btn btn-primary" id='q'>w</button>
-                    <button type="button" class="btn btn-primary" id='q'>e</button>
-                    <button type="button" class="btn btn-primary" id='q'>r</button>
-                    <button type="button" class="btn btn-primary" id='q'>t</button>
-                    <button type="button" class="btn btn-primary" id='q'>y</button>
-                    <button type="button" class="btn btn-primary" id='q'>u</button>
-                    <button type="button" class="btn btn-primary" id='q'>i</button>
-                    <button type="button" class="btn btn-primary" id='q'>o</button>
-                    <button type="button" class="btn btn-primary" id='q'>p</button>
+                    <button type="button" class="btn btn-primary" id='w'>w</button>
+                    <button type="button" class="btn btn-primary" id='e'>e</button>
+                    <button type="button" class="btn btn-primary" id='r'>r</button>
+                    <button type="button" class="btn btn-primary" id='t'>t</button>
+                    <button type="button" class="btn btn-primary" id='y'>y</button>
+                    <button type="button" class="btn btn-primary" id='u'>u</button>
+                    <button type="button" class="btn btn-primary" id='i'>i</button>
+                    <button type="button" class="btn btn-primary" id='o'>o</button>
+                    <button type="button" class="btn btn-primary" id='p'>p</button>
                     <div class='modified_br'></div>
-                    <button type="button" class="btn btn-primary" id='q'>a</button>
-                    <button type="button" class="btn btn-primary" id='q'>s</button>
-                    <button type="button" class="btn btn-primary" id='q'>d</button>
-                    <button type="button" class="btn btn-primary" id='q'>f</button>
-                    <button type="button" class="btn btn-primary" id='q'>g</button>
-                    <button type="button" class="btn btn-primary" id='q'>h</button>
-                    <button type="button" class="btn btn-primary" id='q'>j</button>
-                    <button type="button" class="btn btn-primary" id='q'>k</button>
-                    <button type="button" class="btn btn-primary" id='q'>l</button>
+                    <button type="button" class="btn btn-primary" id='a'>a</button>
+                    <button type="button" class="btn btn-primary" id='s'>s</button>
+                    <button type="button" class="btn btn-primary" id='d'>d</button>
+                    <button type="button" class="btn btn-primary" id='f'>f</button>
+                    <button type="button" class="btn btn-primary" id='g'>g</button>
+                    <button type="button" class="btn btn-primary" id='h'>h</button>
+                    <button type="button" class="btn btn-primary" id='j'>j</button>
+                    <button type="button" class="btn btn-primary" id='k'>k</button>
+                    <button type="button" class="btn btn-primary" id='l'>l</button>
                     <div class='modified_br'></div>
-                    <button type="button" class="btn btn-primary" id='q'>z</button>
-                    <button type="button" class="btn btn-primary" id='q'>x</button>
-                    <button type="button" class="btn btn-primary" id='q'>c</button>
-                    <button type="button" class="btn btn-primary" id='q'>v</button>
-                    <button type="button" class="btn btn-primary" id='q'>b</button>
-                    <button type="button" class="btn btn-primary" id='q'>n</button>
-                    <button type="button" class="btn btn-primary" id='q'>m</button>
+                    <button type="button" class="btn btn-primary" id='z'>z</button>
+                    <button type="button" class="btn btn-primary" id='x'>x</button>
+                    <button type="button" class="btn btn-primary" id='c'>c</button>
+                    <button type="button" class="btn btn-primary" id='v'>v</button>
+                    <button type="button" class="btn btn-primary" id='b'>b</button>
+                    <button type="button" class="btn btn-primary" id='n'>n</button>
+                    <button type="button" class="btn btn-primary" id='m'>m</button>
+                </div>
+                <div class='col'>
+                    <button type="button" class='btn btn-primary full_width' id='reset'>Reset</button>
+                    <input type='text' class='form-control' placeholder='Enter Custom Hint' id='custom_hint'>
+                    <input type='text' class='form-control' placeholder='Enter Custom Hidden Word' id='custom_word'>
+                    <button type='button' class='btn btn-primary full_width' id='start'>Start with custom word and hint</button>
                 </div>
             </div>
             <script>
+                function replaceAt(string, index, replacement) {
+                    if (index < 0 || index >= string.length) {
+                        // Invalid index, return the original string unchanged
+                        return string;
+                    }
+                    return string.slice(0, index) + replacement + string.slice(index + 1);
+                }
+                
+                // Add click event listeners to each letter button
+                var letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+                letters.forEach(function (letter) {
+                    document.getElementById(letter).addEventListener("click", function () {
+                    handleButtonClick(letter);
+                    });
+                });
+
+                function handleButtonClick(letter) {
+                    var hiddenWordWithUnderscoresAndSpacesRemoved = document.getElementById("hidden_word_with_underscores").innerHTML.trim();
+                    hiddenWordWithUnderscoresAndSpacesRemoved = hiddenWordWithUnderscoresAndSpacesRemoved.replace(/ /g, "");
+                    hiddenWordWithUnderscoresAndSpacesRemoved = hiddenWordWithUnderscoresAndSpacesRemoved.replace(/<br\s*\/?>/gi, ' ');
+
+                    var hiddenWord = document.getElementById("hidden_word").innerHTML;
+
+                    var indexes = [];
+                    for (var i = 0; i < hiddenWord.length; i++) {
+                    if (hiddenWord[i] === letter) {
+                        indexes.push(i);
+                    }
+                    }
+
+                    indexes.forEach(function (index) {
+                    hiddenWordWithUnderscoresAndSpacesRemoved = replaceAt(hiddenWordWithUnderscoresAndSpacesRemoved, index, letter);
+                    });
+
+                    hiddenWordWithUnderscoresAndSpacesRemoved = hiddenWordWithUnderscoresAndSpacesRemoved.split('').join(' ');
+                    hiddenWordWithUnderscoresAndSpacesRemoved = hiddenWordWithUnderscoresAndSpacesRemoved.replace('   ', "<br>");
+
+                    document.getElementById("hidden_word_with_underscores").innerHTML = hiddenWordWithUnderscoresAndSpacesRemoved;
+
+                    document.getElementById(letter).disabled = true;
+                }
+                document.getElementById("start").addEventListener("click", function() {
+                    var customHint = document.getElementById("custom_hint").value;
+                    document.getElementById("hint").innerHTML = customHint;
+                    document.getElementById("custom_hint").value = "";
+                });
+                document.getElementById("reset").addEventListener("click", function() {
+                    var customHint = "The best subject in school";
+                    document.getElementById("hint").innerHTML = customHint;
+                    document.getElementById("custom_hint").value = "";
+                });
             </script>
         </div>
     </body>
