@@ -51,7 +51,7 @@
         <div class="container">
             <h1>Projects</h1>
             <p>This is where I will display the projects I've worked on. This page is in progress and the first project is not complete</p>
-            <h1>Hangman<div style='font-size:small'>(in progress)</div></h1>
+            <h1>Hangman</h1>
             <div class='row'>
                 <div class='col centered'>
                     <div id='hint'>The best subject in school</div>
@@ -60,8 +60,8 @@
                         _ _ _ _ _ _ _ _ <br> _ _ _ _ _ _ _ 
                     </div>
                 </div>
-                <div class='col' id='current_hangman_image'>
-                    <img src="hangman_images/hangman_0.jpg" alt='hangman_0' style='padding:10px'>
+                <div class='col'>
+                    <img src="hangman_images/hangman_0.jpg" id ='current_hangman_image' alt='hangman_0' style='padding:10px'>
                 </div>
             </div>
             <div class='row'>
@@ -103,6 +103,21 @@
                 </div>
             </div>
             <script>
+                var hangmanImageCount = 0;
+                // Function to update the hangman image
+                function updateHangmanImage() {
+                    var hangmanImageElement = document.getElementById('current_hangman_image');
+                    if (hangmanImageCount <= 7) {
+                        hangmanImageElement.src = 'hangman_images/hangman_' + hangmanImageCount + '.jpg';
+                    }
+                    if (hangmanImageCount == 7){
+                        alert("sorry you lose");
+                        letters.forEach(function (letter) {
+                        document.getElementById(letter).disabled = true;
+                    });
+                    }
+                }
+
                 // Add click event listeners to each letter button
                 var letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
                 letters.forEach(function (letter) {
@@ -133,6 +148,12 @@
 
                 // function for when any of the keyboard buttons are clicked to see if any of the underscores need to be replaced with a letter
                 function handleButtonClick(letter) {
+                    // get the original word and make it do the transitions that hiddenword will go through to compare to see if there has been an update with a letter
+                    var originalWord = document.getElementById("hidden_word_with_underscores").innerHTML.trim();
+                    originalWord = originalWord.replace(/ /g, "");
+                    originalWord = originalWord.replace(/<br\s*\/?>/gi, ' ');
+                    originalWord = originalWord.split('').join(' ');
+                    originalWord = originalWord.replace('   ', "<br>");
                     // get the currently displayed hangman word and remove spaces and line breaks
                     var hiddenWordWithUnderscoresAndSpacesRemoved = document.getElementById("hidden_word_with_underscores").innerHTML.trim();
                     hiddenWordWithUnderscoresAndSpacesRemoved = hiddenWordWithUnderscoresAndSpacesRemoved.replace(/ /g, "");
@@ -150,13 +171,22 @@
                     indexes.forEach(function (index) {
                     hiddenWordWithUnderscoresAndSpacesRemoved = replaceAt(hiddenWordWithUnderscoresAndSpacesRemoved, index, letter);
                     });
+                    // check to see if they won
+                    if (!hiddenWordWithUnderscoresAndSpacesRemoved.includes('_')) {
+                        alert('You win!');
+                    }
                     // add a space between each character and turn the newly created triple space into a new line
                     hiddenWordWithUnderscoresAndSpacesRemoved = hiddenWordWithUnderscoresAndSpacesRemoved.split('').join(' ');
                     hiddenWordWithUnderscoresAndSpacesRemoved = hiddenWordWithUnderscoresAndSpacesRemoved.replace('   ', "<br>");
-                    //replace the underscored viewed with the new underscore version after clicking the button
+                    //replace the underscored viewed word with the new underscore version after clicking the button
                     document.getElementById("hidden_word_with_underscores").innerHTML = hiddenWordWithUnderscoresAndSpacesRemoved;
                     // disable the button so it isn't able to be clicked again
                     document.getElementById(letter).disabled = true;
+                    // Check if there was any update to the word
+                    if (originalWord === hiddenWordWithUnderscoresAndSpacesRemoved) {
+                        hangmanImageCount++;
+                        updateHangmanImage();
+                    }
                 }
 
                 // when the start button is clicked
@@ -174,6 +204,8 @@
                     letters.forEach(function (letter) {
                         document.getElementById(letter).disabled = false;
                     });
+                    hangmanImageCount = 0;
+                    updateHangmanImage();
                 });
 
                 // when the reset button is clicked
@@ -187,6 +219,8 @@
                     letters.forEach(function (letter) {
                         document.getElementById(letter).disabled = false;
                     });
+                    hangmanImageCount = 0;
+                    updateHangmanImage();
                 });
             </script>
         </div>
