@@ -53,9 +53,9 @@
             <p>This is where I will display the projects I've worked on. This page is updated regularly</p>
             <h1>Hangman</h1>
             <div class='row'>
-                <div class='col centered'>
+                <div class='col centered' style="font-size:larger;">
                     <div id='hint'>The best subject in school</div>
-                    <div id='hidden_word' style='display:none;'>computer science</div> 
+                    <div id='hidden_word' style='display:none;'>computer science</div>
                     <div id='hidden_word_with_underscores'>
                         _ _ _ _ _ _ _ _ <br> _ _ _ _ _ _ _ 
                     </div>
@@ -97,6 +97,9 @@
                 </div>
                 <div class='col'>
                     <button type="button" class='btn btn-primary full_width' id='reset'>Reset</button>
+                    <div class='row'><div class='col-12'>If you want to enter your own word to play with a friend you can enter it below in 
+                        the "Enter Custom Hidden Word" Box. Up to three words can be entered seperated with spaces. 
+                        The Custom Hint is optional and can be left blank.</div></div>
                     <input type='text' class='form-control' placeholder='Enter Custom Hint' id='custom_hint'>
                     <input type='text' class='form-control' placeholder='Enter Custom Hidden Word' id='custom_word'>
                     <button type='button' class='btn btn-primary full_width' id='start'>Start with custom word and hint</button>
@@ -126,14 +129,14 @@
                     });
                 });
 
-                // don't allow numbers or special character in custom word input
+                // don't allow numbers, special characters, or a second space in the custom word input
                 const inputElement = document.getElementById('custom_word');
                 inputElement.addEventListener('input', function (event) {
-                    const inputValue = event.target.value;
-                    const regex = /^[a-zA-Z\s]+$/; // Allows alphabetic characters (uppercase and lowercase) and spaces
+                    const inputValue = event.target.value.trim(); // Remove leading and trailing spaces
+                    const regex = /^[a-zA-Z]+(?:\s[a-zA-Z]+)?$/;
+                    // If the input doesn't match the pattern, prevent the input from being entered
                     if (!regex.test(inputValue)) {
-                        // If the input contains numbers or special characters, prevent the input from being entered
-                        event.target.value = inputValue.replace(/[^a-zA-Z\s]/g, '');
+                        event.target.value = inputValue.replace(/[^a-zA-Z\s]|(?<=\s)\s|\s{2,}/g, '');
                     }
                 });
 
@@ -153,6 +156,7 @@
                     originalWord = originalWord.replace(/ /g, "");
                     originalWord = originalWord.replace(/<br\s*\/?>/gi, ' ');
                     originalWord = originalWord.split('').join(' ');
+                    originalWord = originalWord.replace('   ', "<br>");
                     originalWord = originalWord.replace('   ', "<br>");
                     // get the currently displayed hangman word and remove spaces and line breaks
                     var hiddenWordWithUnderscoresAndSpacesRemoved = document.getElementById("hidden_word_with_underscores").innerHTML.trim();
@@ -181,6 +185,7 @@
                     // add a space between each character and turn the newly created triple space into a new line
                     hiddenWordWithUnderscoresAndSpacesRemoved = hiddenWordWithUnderscoresAndSpacesRemoved.split('').join(' ');
                     hiddenWordWithUnderscoresAndSpacesRemoved = hiddenWordWithUnderscoresAndSpacesRemoved.replace('   ', "<br>");
+                    hiddenWordWithUnderscoresAndSpacesRemoved = hiddenWordWithUnderscoresAndSpacesRemoved.replace('   ', "<br>");
                     //replace the underscored viewed word with the new underscore version after clicking the button
                     document.getElementById("hidden_word_with_underscores").innerHTML = hiddenWordWithUnderscoresAndSpacesRemoved;
                     // disable the button so it isn't able to be clicked again
@@ -198,6 +203,8 @@
                     var customWord = document.getElementById("custom_word").value;
                     var underscoreWord = customWord.replace(/[^ ]/g, '_');
                     underscoreWord = underscoreWord.split('').join(' ');
+                    // twice because up to three words are supported
+                    underscoreWord = underscoreWord.replace('   ', "<br>");
                     underscoreWord = underscoreWord.replace('   ', "<br>");
                     document.getElementById("hint").innerHTML = customHint;
                     document.getElementById("custom_hint").value = "";
