@@ -132,6 +132,9 @@
                                 document.getElementById(letter).disabled = false;
                             });
 
+                            // Remove any existing hints
+                            document.getElementById("hint").innerHTML = '';
+
                             // Reset the hangman image
                             hangmanImageCount = 0;
                             updateHangmanImage();
